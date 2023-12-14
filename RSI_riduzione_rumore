@@ -1,0 +1,33 @@
+// intrabar RSI 50-lvl strategy
+[IntrabarOrderGeneration = true];
+begin
+
+	Vars:
+		TradeSize(2),
+		intrabarpersist MyRSI(0),
+		intrabarpersist MyRSISlope1(0),
+		intrabarpersist MyRSISlope2(0);
+			 
+	MyRSI = RSI(open,14);
+	MyRSISlope2 = LinearRegSlope(RSI(open,14),50);
+	MyRSISlope1 = LinearRegSlope(RSI(open,14),5);
+	
+	// short entry
+	if MyRSISlope1 < MyRSISlope2 then 
+	begin 		
+		if not(marketposition < 0) then
+			SellShort("ShortIN") TradeSize contracts next bar at market;
+	end;	
+					
+	// long entry
+	if MyRSISlope1 > MyRSISlope2 then 
+	begin		
+		if not(marketposition > 0) then
+			Buy("LongIN") TradeSize contracts next bar at market;
+	end;
+		
+end; 
+
+
+
+
